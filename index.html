@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catatan Bagas</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="icon.png">
    
 </head>
 <body>
@@ -14,7 +15,7 @@
         
         
         <div class="filter-section">
-            <input type="text" class="search-box" placeholder="Cari catatan annisa...">
+            <input type="text" class="search-box" placeholder="Cari catatan Bagas...">
             <select id="sort-by">
                 <option value="newest">Terbaru</option>
                 <option value="oldest">Terlama</option>
@@ -141,7 +142,7 @@
 
         // Delete note
         function deleteNote(id) {
-            if (confirm('Apakah annisa yakin ingin menghapus catatan ini?')) {
+            if (confirm('Apakah Bagas yakin ingin menghapus catatan ini?')) {
                 notes = notes.filter(note => note.id !== id);
                 localStorage.setItem('notes', JSON.stringify(notes));
                 filterAndSortNotes();
