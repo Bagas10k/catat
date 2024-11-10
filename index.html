@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catatan annisa</title>
+    <link rel="stylesheet" href="style.css">
+   
+</head>
+<body>
+    <div class="container">
+        <h1>Catatan</h1>
+        <h5>Annisa Nur'aini🩷</h5>
+        
+        
+        <div class="filter-section">
+            <input type="text" class="search-box" placeholder="Cari catatan annisa...">
+            <select id="sort-by">
+                <option value="newest">Terbaru</option>
+                <option value="oldest">Terlama</option>
+                <option value="title">Judul (A-Z)</option>
+                <option value="title-desc">Judul (Z-A)</option>
+            </select>
+        </div>
+
+        <button class="add-note">Buat Catatan Baru</button>
+
+        <div class="note-form">
+            <input type="text" id="note-title" placeholder="Judul Catatan">
+            <textarea id="note-content" placeholder="Isi Catatan"></textarea>
+            <input type="hidden" id="note-id">
+            <button onclick="saveNote()">Simpan Catatan</button>
+        </div>
+
+        <div class="notes-container"></div>
+        
+        <footer>
+            <p>Semoga mempermudahkan Annisa</p>
+        </footer>
+    </div>
+
+    <script>
+        let notes = JSON.parse(localStorage.getItem('notes')) || [];
+        const notesContainer = document.querySelector('.notes-container');
+        const noteForm = document.querySelector('.note-form');
+        const searchBox = document.querySelector('.search-box');
+        const addNoteBtn = document.querySelector('.add-note');
+        const sortBySelect = document.getElementById('sort-by');
+
+        // Filter and sort notes
+        function filterAndSortNotes() {
+            let filteredNotes = [...notes];
+            
+            // Text search
+            const searchTerm = searchBox.value.toLowerCase();
+            if (searchTerm) {
+                filteredNotes = filteredNotes.filter(note => 
+                    note.title.toLowerCase().includes(searchTerm) || 
+                    note.content.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            // Sorting
+            switch (sortBySelect.value) {
+                case 'newest':
+                    filteredNotes.sort((a, b) => new Date(b.date) - new Date(a.date));
+                    break;
+                case 'oldest':
+                    filteredNotes.sort((a, b) => new Date(a.date) - new Date(b.date));
+                    break;
+                case 'title':
+                    filteredNotes.sort((a, b) => a.title.localeCompare(b.title));
+                    break;
+                case 'title-desc':
+                    filteredNotes.sort((a, b) => b.title.localeCompare(a.title));
+                    break;
+            }
+
+            displayNotes(filteredNotes);
+        }
+
+        // Event listeners for filters
+        searchBox.addEventListener('input', filterAndSortNotes);
+        sortBySelect.addEventListener('change', filterAndSortNotes);
+
+        // Show add note form
+        addNoteBtn.addEventListener('click', () => {
+            noteForm.style.display = 'block';
+            document.getElementById('note-id').value = '';
+            document.getElementById('note-title').value = '';
+            document.getElementById('note-content').value = '';
+        });
+
+        // Save note
+        function saveNote() {
+            const title = document.getElementById('note-title').value.trim();
+            const content = document.getElementById('note-content').value.trim();
+            const id = document.getElementById('note-id').value;
+
+            if (!title || !content) {
+                alert('Judul dan isi catatan harus diisi yahh!');
+                return;
+            }
+
+            if (id) {
+                // Edit existing note
+                const index = notes.findIndex(note => note.id === id);
+                notes[index] = {
+                    ...notes[index],
+                    title,
+                    content,
+                    lastEdited: new Date().toLocaleString()
+                };
+            } else {
+                // Add new note
+                notes.unshift({
+                    id: Date.now().toString(),
+                    title,
+                    content,
+                    date: new Date().toLocaleString(),
+                    lastEdited: new Date().toLocaleString()
+                });
+            }
+
+            localStorage.setItem('notes', JSON.stringify(notes));
+            noteForm.style.display = 'none';
+            filterAndSortNotes();
+        }
+
+        // Edit note
+        function editNote(id) {
+            const note = notes.find(note => note.id === id);
+            if (note) {
+                document.getElementById('note-id').value = note.id;
+                document.getElementById('note-title').value = note.title;
+                document.getElementById('note-content').value = note.content;
+                noteForm.style.display = 'block';
+                document.getElementById('note-content').focus();
+            }
+        }
+
+        // Delete note
+        function deleteNote(id) {
+            if (confirm('Apakah annisa yakin ingin menghapus catatan ini?')) {
+                notes = notes.filter(note => note.id !== id);
+                localStorage.setItem('notes', JSON.stringify(notes));
+                filterAndSortNotes();
+            }
+        }
+
+        // Display notes
+        function displayNotes(notesToShow) {
+            notesContainer.innerHTML = notesToShow.map(note => `
+                <div class="note">
+                    <h3>${note.title}</h3>
+                    <div class="content">${note.content}</div>
+                    <div class="date">Dibuat: ${note.date}</div>
+                    ${note.lastEdited !== note.date ? 
+                        `<div class="date">Terakhir diubah: ${note.lastEdited}</div>` : ''}
+                    <div class="actions">
+                        <button class="edit-btn" onclick="editNote('${note.id}')">Edit</button>
+                        <button class="delete-btn" onclick="deleteNote('${note.id}')">Hapus</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Initial display
+        filterAndSortNotes();
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js')
+            .then(() => {
+                console.log('Service Worker registered');
+            })
+            .catch((error) => {
+                console.error('Service Worker registration failed:', error);
+            });
+        }
+    </script>
+</body>
+</html>
