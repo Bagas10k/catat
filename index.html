@@ -56,8 +56,8 @@
             const searchTerm = searchBox.value.toLowerCase();
             if (searchTerm) {
                 filteredNotes = filteredNotes.filter(note => 
-                    note.title.toLowerCase().includes(searchTerm) || 
-                );
+                    note.title.toLowerCase().includes(searchTerm) ||  
+                    note.content.toLowerCase().includes(searchTerm));
             }
 
             // Sorting
