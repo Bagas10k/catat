@@ -4,7 +4,7 @@ const urlsToCache = [
     '/index.html',
     '/style.css',
     '/script.js',
-    '/manifest.json',
+    '/mainfest.json',
     '/icon.png'  // Pastikan ikon ini ada di folder yang sama
 ];
 
