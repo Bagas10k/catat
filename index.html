@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catatan Bagas</title>
+    <title>NOTE</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="icon.png">
    
 </head>
 <body>
     <div class="container">
-        <h1>Catatan</h1>
-        <h5>Bagas Saputra</h5>
+        <h1>NOTE</h1>
+        <h5> <em>Never Try Never Know</em> </h5>
         
         
         <div class="filter-section">
-            <input type="text" class="search-box" placeholder="Cari catatan Bagas...">
+            <input type="text" class="search-box" placeholder="Search">
             <select id="sort-by">
                 <option value="newest">Terbaru</option>
                 <option value="oldest">Terlama</option>
@@ -24,19 +24,19 @@
             </select>
         </div>
 
-        <button class="add-note">Buat Catatan Baru</button>
+        <button class="add-note">Create a new note</button>
 
         <div class="note-form">
             <input type="text" id="note-title" placeholder="Judul Catatan">
             <textarea id="note-content" placeholder="Isi Catatan"></textarea>
             <input type="hidden" id="note-id">
-            <button onclick="saveNote()">Simpan Catatan</button>
+            <button onclick="saveNote()">saveNote</button>
         </div>
 
         <div class="notes-container"></div>
         
         <footer>
-            <p>Sukses hanya untuk orang yang pantang menyerah</p>
+            <p>BaganApp</p>
         </footer>
     </div>
 
@@ -142,7 +142,7 @@
 
         // Delete note
         function deleteNote(id) {
-            if (confirm('Apakah Bagas yakin ingin menghapus catatan ini?')) {
+            if (confirm('Apakah anda yakin ingin menghapus catatan ini?')) {
                 notes = notes.filter(note => note.id !== id);
                 localStorage.setItem('notes', JSON.stringify(notes));
                 filterAndSortNotes();
